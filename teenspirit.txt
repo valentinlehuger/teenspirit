@@ -1,0 +1,17 @@
+
+1) define a set of warning words
+2) for each keywords make a search for one week
+3) for each tweet user deep dive on the user wall
+4) store for each user how many times each warning words appear
+
+Structure :
+
+{
+  "userid_1": {
+     "w_word_1": 3,
+     "w_word_8": 5
+  },
+  "userid_n": {
+     ...
+  }
+}

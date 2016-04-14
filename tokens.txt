@@ -1,0 +1,4 @@
+consumer_key: kinyROYZlt4mwUKbcwfBgMYNA
+consumer_secret: IHXr6epr0fkTPs7CmZMqKyldLyp3srmXha7UkG0MAlFSZT1hcS
+access_token_key: 538051444-d8li1JwzR63kB1cPj3FCw15FROzrDrxV8c0niu8B
+access_token_secret: dDgLOEBJfeOCPKZXNhqqf1Mus8AhSSfhYStmYjVgg8yig
