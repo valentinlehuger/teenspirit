@@ -8,6 +8,17 @@ path = '/home/romain/Documents/BitBucket/DataForGood/teenspirit/teenspirit/'
 json_data=open(path+"dataset.json").read()
 data = json.loads(json_data)
 
+cont = True
+i = 0
+while cont:
+    print(data[i])
+    var = input('Continue ? y/n \n')
+    if var.lower()=='y':
+        cont = True
+        i+=1
+    else:
+        cont = False
+
 def movingaverage(interval, window_size):
     window = np.ones(int(window_size))/float(window_size)
     ma = np.convolve(interval, window, 'full')
