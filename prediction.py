@@ -3,6 +3,7 @@ import numpy as np
 import json
 from scipy.stats import entropy
 from pandas.io.json import json_normalize
+import datetime
 
 path = '/home/romain/Documents/BitBucket/DataForGood/teenspirit/teenspirit/'
 json_data=open(path+"dataset.json").read()
@@ -25,6 +26,24 @@ def timeSerieFeatures(x,M):
     return mn, std, ent, mean_momentum
 
 
+users = df[[col for col in df.columns if 'user' in col]].drop_duplicates()
+df['datetime'] = list(map(lambda x: datetime.datetime.strptime(x,"%a %b %d %H:%M:%S %z %Y"),df['datetime']))
+df['day'] = list(map(lambda x: datetime.datetime.date(x),df['datetime']))
+
+timeline = pd.date_range(df['day'].min(),df['day'].max())
+# convert to dataframe to then merge each variable on this timeline and 
+# compute time serie
+timeline = pd.DataFrame({'day':list(map(lambda x: datetime.datetime.date(x),timeline))})
+
+def timeseriename(x):
+    return [x+"_mn",x+"_std",x+"_ent",x+"_mn_mom"]
+    
+col = ['user_id','day']
+col.extend(timeseriename('volume'))
+features = pd.DataFrame(columns = col)
+
+features['user_id'] = users['user.id']
+
 #==============================================================================
 # Engagement
 #==============================================================================
@@ -43,6 +62,23 @@ o   Insomnia index = normalized difference in number of posting made between
     course of a day. Moments of day of activity. Night window = 9PM – 6AM vs 
     day window.
 """
+
+### Volume
+vol = df.groupby(['user.id','day'])['id'].count().reset_index()
+
+for user in users['user.id']:
+    x = vol[['id','day']][vol['user.id']==user]
+    x = pd.merge(timeline,x,how='left')
+    x = x.fillna(0)
+    features.loc[features['user_id']==user,timeseriename('volume')] = timeSerieFeatures(list(x['id']),7)
+
+
+
+
+
+
+
+
 
 #==============================================================================
 # Egocentric Social Graph
