@@ -1,7 +1,7 @@
 # Project teenspirit
 
 Installer les packages pythons :
-pip install -r requirement
+pip install -r requirements.txt
 
 ### Pour récuper tous les infos liés à un tweet et son user:
 python main.py search <json_output_file>
