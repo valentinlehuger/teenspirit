@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
 		if len(argv) > 2:
 			try:
-				with open(argv[2], 'w') as outputfile:
+				with open(argv[2]+".json", 'w') as outputfile:
 					json.dump(tweets, outputfile)
 					print("dump result into {}".format(argv[2]))
 			except:
