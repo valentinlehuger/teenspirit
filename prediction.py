@@ -6,10 +6,26 @@ from pandas.io.json import json_normalize
 import datetime
 
 path = '/home/romain/Documents/BitBucket/DataForGood/teenspirit/teenspirit/'
-json_data=open(path+"dataset.json").read()
-data = json.loads(json_data)
 
-df = json_normalize(data)
+hashtags = ['mort','mourir','suicide']
+df_tmp = {}
+col = None
+for hashtag in hashtags:
+    json_data=open(path+hashtag+".json").read()
+    data = json.loads(json_data)
+    df_tmp[hashtag] = json_normalize(data)
+    if col is None:
+        col = list(df_tmp[hashtag].columns)
+    else:
+        col = list(set(col) & set(df_tmp[hashtag].columns))
+
+df = None
+for hashtag in hashtags:
+    if df is None:
+        df = df_tmp[hashtag][col]
+    else:
+        df = pd.concat([df,df_tmp[hashtag][col]])
+
 
 def movingaverage(interval, window_size):
     window = np.ones(int(window_size))/float(window_size)
