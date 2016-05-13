@@ -40,9 +40,11 @@ def timeseriename(x):
     
 col = ['user_id','day']
 col.extend(timeseriename('volume'))
+col.extend(timeseriename('insomnia'))
 features = pd.DataFrame(columns = col)
 
 features['user_id'] = users['user.id']
+features['day'] = timeline['day'].max() # ? la date d'aujourd'hui ? de sa dernière venu ? de la date d'aujourdhui et depuis combien de temps on l'a pas vu ? 
 
 #==============================================================================
 # Engagement
@@ -72,10 +74,29 @@ for user in users['user.id']:
     x = x.fillna(0)
     features.loc[features['user_id']==user,timeseriename('volume')] = timeSerieFeatures(list(x['id']),7)
 
+### Fraction of retweets
 
+### Proportion of links
 
+### Fraction of question-centric
 
+### Insomnia index
+df['hour'] = list(map(lambda x: x.hour,df['datetime']))
+df['hour_window'] = list(map(lambda x: 'day' if 6<=x<21 else 'night',df['hour']))
 
+user_insomnia = df.groupby(['user.id','day','hour_window'])['id'].count().unstack()
+user_insomnia = user_insomnia.rename(columns={'day':'day_window','night':'night_window'}).reset_index()
+user_insomnia = user_insomnia.fillna(0)
+user_insomnia['insomnia'] = (user_insomnia['night_window']-user_insomnia['day_window'])/(user_insomnia['night_window']+user_insomnia['day_window'])
+
+# user_insomnia['insomnia'] is between -1 and 1 -> scale on 0 - 1 (otherwise entropy = inf)
+user_insomnia['insomnia'] = (user_insomnia['insomnia']+1)/2
+
+for user in users['user.id']:
+    x = user_insomnia[['insomnia','day']][user_insomnia['user.id']==user]
+    x = pd.merge(timeline,x,how='left')
+    x = x.fillna(0)
+    features.loc[features['user_id']==user,timeseriename('insomnia')] = timeSerieFeatures(list(x['insomnia']),7)
 
 
 
