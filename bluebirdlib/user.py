@@ -4,7 +4,7 @@
 # @Last modified time: 2016-05-11T23:15:20+02:00
 
 
-def userTimeline(userId, max_id=None, rec=100, api):
+def userTimeline(userId, api, max_id=None, rec=20):
 	""" Returns other tweets from a user. """
 	print rec
 	if rec <= 0:
