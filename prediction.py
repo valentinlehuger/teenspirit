@@ -4,6 +4,8 @@ import json
 from scipy.stats import entropy
 from pandas.io.json import json_normalize
 import datetime
+import warnings
+warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
 path = '/home/romain/Documents/BitBucket/DataForGood/teenspirit/teenspirit/'
 
@@ -42,8 +44,8 @@ def timeSerieFeatures(x,M):
     return mn, std, ent, mean_momentum
 
 
-users = df[[col for col in df.columns if 'user' in col]].drop_duplicates()
-df['datetime'] = list(map(lambda x: datetime.datetime.strptime(x,"%a %b %d %H:%M:%S %z %Y"),df['datetime']))
+users = df[['user.id','user.name']].drop_duplicates()
+df['datetime'] = list(map(lambda x: datetime.datetime.strptime(x,"%a %b %d %H:%M:%S %z %Y"),df['created_at']))
 df['day'] = list(map(lambda x: datetime.datetime.date(x),df['datetime']))
 
 timeline = pd.date_range(df['day'].min(),df['day'].max())
@@ -176,3 +178,9 @@ o   (a) usage of depression-related terms → define a lexicon with drepression
 o   (b) popular antidepressants in the treatment of clinical depression
 Wikipedia page ‘list of antidepressants’ > lexicon of drugs name.
 """
+
+features['day'] = list(map(str,features['day']))
+features_json = features.to_dict(orient='records')
+with open(path+"features.json", 'w') as outputfile:
+    json.dump(features_json, outputfile)
+    print("dump result into features.json")
