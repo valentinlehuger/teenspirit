@@ -10,7 +10,7 @@ user_ids = ["2637627982"]
 
 
 if __name__ == "__main__":
-    max_request = 2
+    max_request = 100
 
     if not user_ids:
         raise Exception("Need user ids")
