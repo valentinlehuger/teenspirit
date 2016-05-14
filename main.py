@@ -28,3 +28,4 @@ if __name__ == "__main__":
 		else:
 			pp = pprint.PrettyPrinter(indent=2)
 			pp.pprint(tweets)
+		#print set(map(lambda x: x["user"]["id"], tweets))

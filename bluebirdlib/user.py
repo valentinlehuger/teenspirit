@@ -8,7 +8,9 @@ def userTimeline(userId, api, max_id=None, rec=20):
 	""" Returns other tweets from a user. """
 	if rec <= 0:
 		return []
-
+	
 	tweets = api.GetUserTimeline(userId, max_id=max_id)
+	if not tweets:
+		return []
 	max_id = str(int(min([x.id for x in tweets])) - 1)
 	return tweets + userTimeline(userId, api, max_id, rec=rec-1)
