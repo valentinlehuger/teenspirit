@@ -1,0 +1,39 @@
+<!--
+@Author: valentin
+@Date:   2016-05-16T23:27:26+02:00
+@Last modified by:   valentin
+@Last modified time: 2016-05-16T23:52:01+02:00
+-->
+
+{% extends "bootstrap/base.html" %}
+{% block title %}Twitter tagger{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-fixed-top">
+  <!-- ... -->
+</div>
+{% endblock %}
+
+{% block content %}
+  <h1>Twitter tagger</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Tweet</th>
+        <th>Depressed ?</th>
+      </tr>
+    </thead>
+    <tbody>
+	{% for tweet in tweets %}
+      <tr>
+        <td>{{ tweet["text"] }}</td>
+		<td>
+			<button type="button" class="btn btn-success">Négatif</button>
+			<button type="button" class="btn btn-danger">Positif</button>
+		</td>
+      </tr>
+	{% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
