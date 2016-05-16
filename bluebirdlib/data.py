@@ -1,7 +1,7 @@
 # @Author: valentin
 # @Date:   2016-05-14T01:46:03+02:00
 # @Last modified by:   valentin
-# @Last modified time: 2016-05-16T23:26:20+02:00
+# @Last modified time: 2016-05-17T00:29:03+02:00
 
 from pymongo import MongoClient
 import os
@@ -53,6 +53,17 @@ def get_tweets(filters={}, connection=None):
 	collection = db["tweets"]
 	result = collection.find(filters)
 	return [doc for doc in result]
+
+
+def update_tweet(filter, query, connection=None):
+	if connection is None:
+	    db = get_db("teenspirit")
+	else:
+	    db = connection
+	collection = db["tweets"]
+	result = collection.update(filter, {"$set": query})
+	print result
+	return result
 
 
 if __name__ == "__main__":
