@@ -1,0 +1,23 @@
+---
+# tasks file for ufw
+
+- name: reset firewall
+  ufw:  state=reset
+  ignore_errors: yes
+
+- name: SSH Rules
+  ufw:  rule=allow
+        port=22
+        proto=tcp 
+
+- name: Mongodb
+  ufw:  rule=allow
+        port=27017
+        proto=tcp
+  when: inventory_hostname in groups["task-queue"]
+
+- name: Redis
+  ufw:  rule=allow
+        port=6379
+        proto=tcp
+  when: inventory_hostname in groups["task-queue"]

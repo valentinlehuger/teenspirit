@@ -6,3 +6,5 @@
 
   roles:
     - {role: mongodb }
+    - {role: redis}
+    - {role: ufw}

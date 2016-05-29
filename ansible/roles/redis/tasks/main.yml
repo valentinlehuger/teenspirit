@@ -1,0 +1,17 @@
+---
+# tasks file for redis
+
+- name: install redis
+  apt:  name=redis-server
+        update_cache=yes
+        state=latest
+        force=yes
+
+- name: Change Bind address
+  lineinfile: dest=/etc/redis/redis.conf 
+              regexp="^bind 127.0.0.1"
+              line="bind 0.0.0.0"
+
+- name: Restart Redis
+  service:  name=redis-server
+            state=restarted
