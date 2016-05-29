@@ -13,14 +13,14 @@ import json
 
 
 def main(search, api):
-	tweets = map(lambda x: x.AsDict(), getTweetFromHashTag(search, api))
-	map(lambda x: add_to_mongo(x) if not is_exists(x["id"]) else None, tweets)
-	return 0
+        tweets = map(lambda x: x.AsDict(), getTweetFromHashTag(search, api))
+        map(lambda x: add_to_mongo(x) if not is_exists(x["id"]) else None, tweets)
+        return 0
 
 if __name__ == "__main__":
-	if argv < 2:
-		print "usage ./fetch_hastag.py research"
-	else:
-		search = argv[1]
-		api = get_api("../")
-		main(search, api)
+        if argv < 2:
+                print "usage ./fetch_hastag.py research"
+        else:
+                search = argv[1]
+                api = get_api(argv[2])
+                main(search, api)

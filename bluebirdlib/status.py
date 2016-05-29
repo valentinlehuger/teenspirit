@@ -6,5 +6,5 @@
 
 def getTweetFromHashTag(search, api):
     search = '#' + search
-    l =  api.GetSearch(search, result_type="recent", count=1000)
+    l = api.GetSearch(search, result_type="recent", count=1000)
     return l
