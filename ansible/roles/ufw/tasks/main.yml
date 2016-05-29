@@ -8,7 +8,11 @@
 - name: SSH Rules
   ufw:  rule=allow
         port=22
-        proto=tcp 
+        proto=tcp
+
+- name: activate firewall
+  ufw:  state=enabled
+        policy=deny
 
 - name: Mongodb
   ufw:  rule=allow
@@ -21,3 +25,7 @@
         port=6379
         proto=tcp
   when: inventory_hostname in groups["task-queue"]
+
+- name: activate firewall
+  ufw:  state=reloaded
+        policy=deny

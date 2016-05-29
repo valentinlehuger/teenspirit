@@ -32,3 +32,12 @@
 - name: Start Mongodb
   service:  name=mongodb
             state=started
+
+- name: Change Bind address
+  lineinfile: dest=/etc/mongod.conf
+              regexp="^  bindIp{{ ":" }} 127.0.0.1"
+              line="  bindIp{{ ":" }} 127.0.0.1,0.0.0.0"
+
+- name: Restart Mongodb
+  service:  name=mongodb
+            state=restarted
