@@ -1,5 +1,5 @@
 ---
-- hosts: task_queue
+- hosts: task-queue
   user: kelu
   gather_facts: True
   sudo: true
