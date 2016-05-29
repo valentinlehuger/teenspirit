@@ -1,0 +1,8 @@
+---
+- hosts: task_queue
+  user: kelu
+  gather_facts: True
+  sudo: true
+
+  roles:
+    - {role: mongodb }

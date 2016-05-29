@@ -1,0 +1,8 @@
+kelu_server ansible_ssh_host=195.154.108.228 ansible_ssh_user=kelu ansible_ssh_port=22 
+
+[task_queue]
+kelu_server
+
+[workers]
+
+[database]

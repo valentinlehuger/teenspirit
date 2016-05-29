@@ -1,0 +1,34 @@
+---
+# tasks file for mongodb
+
+## Repo configuration
+# - name: "add MongoDB key"
+#   apt_key: id=7F0CEB10 url=http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x9ECBEC467F0CEB10 state=present
+#   tags:
+#    - mongodb 
+
+
+# - name: " Add MongoDB repo "
+#   apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' state=present
+#   tags:
+#    - mongodb
+
+- name: Get mongodb key
+  shell: sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+
+- name: Create a list file for MongoDB.
+  shell: sudo echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+- name: install mongodb
+  apt:  name=mongodb-org
+        update_cache=yes
+        state=latest
+        force=yes
+
+- name: Copy config file
+  copy: src=mongodb.service
+        dest=/etc/systemd/system/mongodb.service
+
+- name: Start Mongodb
+  service:  name=mongodb
+            state=started
