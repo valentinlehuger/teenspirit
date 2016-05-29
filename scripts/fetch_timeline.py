@@ -19,17 +19,17 @@ suicide_users = map(str, [716900277081735168, 730108386457460737, 4795567622, 73
 
 
 def main(user_id, api):
-	tweets = map(lambda x: x.AsDict(), userTimeline(user_id, api, rec=1))
-	print tweets[0]
-	map(lambda x: add_to_mongo(x) if not is_exists(x["id"]) else None, tweets)
-	return 0
+    tweets = map(lambda x: x.AsDict(), userTimeline(user_id, api, rec=1))
+    print tweets[0]
+    map(lambda x: add_to_mongo(x) if not is_exists(x["id"]) else None, tweets)
+    return 0
 
 if __name__ == "__main__":
-	# if argv < 2:
-	# 	print "usage ./fetch_timeline.py user_id"
-	# else:
-	# 	search = argv[1]
+    # if argv < 2:
+    # 	print "usage ./fetch_timeline.py user_id"
+    # else:
+    # 	search = argv[1]
 
-	for user_id in suicide_users:
-		api = get_api("../")
-		main(user_id, api)
+    for user_id in suicide_users:
+        api = get_api("../")
+        main(user_id, api)
