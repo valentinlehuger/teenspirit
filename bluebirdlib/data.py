@@ -65,8 +65,17 @@ def update_tweet(filter, query, connection=None):
 	print result
 	return result
 
+def get_distinct_users(connection=None):
+    if connection is None:
+        db = get_db("teenspirit")
+    else:
+        db = connection
+    collection = db["tweets"]
+    result = collection.distinct("user")
+    return map(lambda x: x["id"], result)
 
 if __name__ == "__main__":
-	add_to_mongo({"id": 55555555555555555})
-	is_exists(55555555555555555)
-	is_exists(11111111111111111)
+	# add_to_mongo({"id": 55555555555555555})
+	# is_exists(55555555555555555)
+	# is_exists(11111111111111111)
+    print get_distinct_users()
