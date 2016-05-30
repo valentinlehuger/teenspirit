@@ -1,0 +1,10 @@
+---
+- hosts: task-queue
+  user: kelu
+  gather_facts: True
+  sudo: true
+
+  roles:
+    - {role: mongodb }
+    - {role: redis}
+    - {role: ufw}

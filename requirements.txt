@@ -6,3 +6,4 @@ requests-oauthlib==0.6.0
 wsgiref==0.1.2
 pymongo
 mrq
+ansible
