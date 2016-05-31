@@ -1,1 +1,1 @@
-web: python mrq-worker mrq-config.py tweets
+worker: python mrq-worker mrq-config.py tweets
