@@ -45,14 +45,14 @@ def is_exists(twitter_id, connection=None):
 	return bool(a)
 
 
-def get_tweets(filters={}, connection=None):
-	if connection is None:
-	    db = get_db("teenspirit")
-	else:
-	    db = connection
-	collection = db["tweets"]
-	result = collection.find(filters)
-	return [doc for doc in result]
+def get_tweets(filters={}, limit=0, connection=None):
+        if connection is None:
+                db = get_db("teenspirit")
+        else:
+                db = connection
+        collection = db["tweets"]
+        result = collection.find(filters, limit=limit)
+        return [doc for doc in result]
 
 
 def update_tweet(filter, query, connection=None):

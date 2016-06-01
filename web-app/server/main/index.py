@@ -11,24 +11,26 @@ from bluebirdlib.data import get_tweets, update_tweet
 
 @main.route('/')
 def index():
-	return "Hello World"
+        return "Hello World"
 
 
 @main.route('/tweets')
 def tweets():
-	# Get untagged tweets
-	tweets = get_tweets({"depressed": {"$exists": False}})
-	tweets = map(lambda x: {"id": x["id"], "text": x["text"]}, tweets)
+        # Get untagged tweets
+        print "Get tweets"
+        tweets = get_tweets({"depressed": {"$exists": False}}, limit=50)
+        print "OK"
+        tweets = map(lambda x: {"id": x["id"], "text": x["text"]}, tweets)
 
-	return render_template("tweets.html", tweets=tweets)
+        return render_template("tweets.html", tweets=tweets)
 
 @socketio.on('add-positive', namespace='/tweets')
 def add_positive(tweet_id):
-	print tweet_id
-	query = {"depressed": True}
-	update_tweet({"id": int(tweet_id)}, query)
+        print tweet_id
+        query = {"depressed": True}
+        update_tweet({"id": int(tweet_id)}, query)
 
 @socketio.on('add-negative', namespace='/tweets')
 def add_negative(tweet_id):
-	query = {"depressed": False}
-	update_tweet({"id": int(tweet_id)}, query)
+        query = {"depressed": False}
+        update_tweet({"id": int(tweet_id)}, query)
