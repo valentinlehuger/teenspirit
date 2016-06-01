@@ -50,7 +50,7 @@ class Scheduler(Task):
         queue_jobs("bluebirdlib.tasks.GetUserTweets", users, queue="tweets")
         hts = map(lambda x: {"search": x}, HASHTAGS)
         print "Queue hashtags"
-        queue_jobs("bluebirdlib.tasks.getTweetFromHashTag", hts, queue="tweets")
+        queue_jobs("bluebirdlib.tasks.getHashTagTweets", hts, queue="tweets")
         print "Queue scheduler"
         queue_job("bluebirdlib.tasks.Scheduler", {}, queue="tweets")
         return 0
