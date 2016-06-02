@@ -4,7 +4,7 @@
 # @Last modified time: 2016-05-17T00:31:48+02:00
 
 from . import main
-from .. import socketio
+from server import socketio
 from flask import render_template
 
 from bluebirdlib.data import get_tweets, update_tweet
