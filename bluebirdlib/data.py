@@ -56,14 +56,13 @@ def get_tweets(filters={}, limit=0, connection=None):
 
 
 def update_tweet(filter, query, connection=None):
-	if connection is None:
-	    db = get_db("teenspirit")
-	else:
-	    db = connection
-	collection = db["tweets"]
-	result = collection.update(filter, {"$set": query})
-	print result
-	return result
+    if connection is None:
+        db = get_db("teenspirit")
+    else:
+        db = connection
+    collection = db["tweets"]
+    result = collection.update(filter, {"$set": query})
+    return result
 
 def get_distinct_users(connection=None):
     if connection is None:
@@ -73,6 +72,16 @@ def get_distinct_users(connection=None):
     collection = db["tweets"]
     result = collection.distinct("user")
     return map(lambda x: x["id"], result)
+
+
+def get_users(filters={}, limit=0, connection=None):
+    if connection is None:
+        db = get_db("teenspirit")
+    else:
+        db = connection
+    collection = db["users"]
+    result = collection.find(filters, limit=limit)
+    return result
 
 if __name__ == "__main__":
 	# add_to_mongo({"id": 55555555555555555})
