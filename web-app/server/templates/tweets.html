@@ -17,19 +17,18 @@
     <thead>
       <tr>
         <th>Tweet</th>
-        <th>Depressed ?</th>
       </tr>
     </thead>
     <tbody>
 	{% for tweet in tweets %}
       <tr>
         <td>{{ tweet["text"] }}</td>
-		<td>
-			<button type="button" class="btn btn-success" status="negative" tid='{{ tweet["id"] }}'>Négatif</button>
-			<button type="button" class="btn btn-danger" status="positive" tid='{{ tweet["id"] }}'>Positif</button>
-		</td>
       </tr>
 	{% endfor %}
+		<td>
+	<button type="button" class="btn btn-success" status="negative" uid='{{ user["id"] }}'>Négatif</button>
+	<button type="button" class="btn btn-danger" status="positive" uid='{{ user["id"] }}'>Positif</button>
+		</td>
     </tbody>
   </table>
 {% endblock %}

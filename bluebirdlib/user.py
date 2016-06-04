@@ -3,7 +3,7 @@
 # @Last modified by:   valentin
 # @Last modified time: 2016-05-11T23:15:20+02:00
 
-from bluebirdlib.data import get_users, get_tweetsm update_user
+from bluebirdlib.data import get_users, get_tweets, update_user
 
 
 def userTimeline(userId, api, max_id=None, rec=20):

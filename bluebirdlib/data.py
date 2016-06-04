@@ -83,7 +83,7 @@ def get_users(filters={}, limit=0, connection=None):
     result = collection.find(filters, limit=limit)
     return result
 
-def update_user(filter=, query, connection):
+def update_user(filter={}, query={}, connection=None):
     if connection is None:
         db = get_db("teenspirit")
     else:
