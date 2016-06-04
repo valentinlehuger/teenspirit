@@ -25,12 +25,12 @@ def add_json_object(object, filename):
     return True
 
 
-def add_to_mongo(object, connection=None):
+def add_to_mongo(object, database="teenspirit", collection="tweets", connection=None):
 	if connection is None:
-	    db = get_db("teenspirit")
+	    db = get_db(database)
 	else:
 	    db = connection
-	collection = db["tweets"]
+	collection = db[collection]
 	post_id = collection.insert(object, check_keys=False)
 	return post_id
 
