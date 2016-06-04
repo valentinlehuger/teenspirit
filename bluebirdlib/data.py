@@ -83,6 +83,16 @@ def get_users(filters={}, limit=0, connection=None):
     result = collection.find(filters, limit=limit)
     return result
 
+def update_user(filter=, query, connection):
+    if connection is None:
+        db = get_db("teenspirit")
+    else:
+        db = connection
+    collection = db["users"]
+    result = collection.update(filter, query)
+    return result
+
+
 if __name__ == "__main__":
 	# add_to_mongo({"id": 55555555555555555})
 	# is_exists(55555555555555555)

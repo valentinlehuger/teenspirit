@@ -3,7 +3,7 @@
 # @Last modified by:   valentin
 # @Last modified time: 2016-05-11T23:15:20+02:00
 
-from bluebirdlib.data import get_users
+from bluebirdlib.data import get_users, get_tweetsm update_user
 
 
 def userTimeline(userId, api, max_id=None, rec=20):
@@ -23,6 +23,17 @@ def get_next_users_to_display(limit=50, connection=None):
     return [x for x in get_users(filters, limit=limit, connection=connection)]
 
 
+def add_control_to_user(user_id, control):
+    filters = {"user_id": user_id}
+    query = {
+        "$push": {
+            "controls": control
+        }
+    }
+    return update_user(filters, query, connection=connection)
+
+
 if __name__ == '__main__':
-    x = get_next_users_to_display()
-    print len(x), x
+    users = get_next_users_to_display()
+    X = get_tweets(filters={"user.id": {"$in": map(lambda user: user["user_id"], users)}})
+    print len(X)
