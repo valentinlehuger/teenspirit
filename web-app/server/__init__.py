@@ -1,7 +1,7 @@
 # @Author: valentin
 # @Date:   2016-05-16T23:04:45+02:00
 # @Last modified by:   valentin
-# @Last modified time: 2016-05-16T23:39:35+02:00
+# @Last modified time: 2016-06-07T00:05:30+02:00
 
 from flask import Flask
 from flask_bootstrap import Bootstrap

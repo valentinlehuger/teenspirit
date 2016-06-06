@@ -1,11 +1,11 @@
 # @Author: valentin
 # @Date:   2016-05-16T23:05:40+02:00
 # @Last modified by:   valentin
-# @Last modified time: 2016-06-06T23:31:29+02:00
+# @Last modified time: 2016-06-07T00:14:59+02:00
 
 from . import main
-from server import socketio
-from flask import render_template
+from .. import socketio
+from flask import render_template, redirect
 import time
 
 from bluebirdlib.data import get_tweets
@@ -44,8 +44,8 @@ def fetch_tweets():
 	global TWEET
 	for i in range(0, min(len(USER), 2) - len(TWEET)):
 		user_tweets = [tweet["text"]
-					   for tweet
-					   in get_tweets(filters={"user.id": {"$eq": USER[len(TWEET) + i]}})]
+					  for tweet
+					  in get_tweets(filters={"user.id": {"$eq": USER[len(TWEET) + i]}})]
         if len(user_tweets) > 1:
             TWEET.append(user_tweets)
 
@@ -63,12 +63,10 @@ def add_positive(user_id):
     print "in positive"
     query = {"date": time.strftime('%Y-%m-%d %H:%M:%S'), "depressed": True}
     add_control_to_user(long(user_id), query)
-    fetch_new_user()
-    return render_template("tweets.html", tweets=TWEET[0], user=USER[0])
+    return redirect("/tweets")
 
 @socketio.on('add-negative', namespace='/tweets')
 def add_negative(user_id):
     query = {"date": time.strftime('%Y-%m-%d %H:%M:%S'), "depressed": False}
     add_control_to_user(long(user_id), query)
-    fetch_new_user()
-    return render_template("tweets.html", tweets=TWEET[0], user=USER[0])
+    return redirect("/tweets")

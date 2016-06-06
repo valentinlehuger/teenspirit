@@ -1,3 +1,4 @@
+gevent==1.1b4
 cffi
 argparse==1.2.1
 oauthlib==1.0.3
