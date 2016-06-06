@@ -1,7 +1,7 @@
 # @Author: valentin
 # @Date:   2016-05-16T23:05:40+02:00
 # @Last modified by:   valentin
-# @Last modified time: 2016-05-17T00:31:48+02:00
+# @Last modified time: 2016-06-06T23:31:29+02:00
 
 from . import main
 from server import socketio
@@ -13,7 +13,7 @@ from bluebirdlib.user import get_next_users_to_display, add_control_to_user
 
 TWEET = []
 USER = []
-    
+
 def fetch_new_user():
 
     global TWEET
@@ -33,22 +33,30 @@ def fetch_new_user():
 
 @main.route('/')
 def index():
-    return "Hello World"
+    return "<a href=/tweets>Tweets</a>"
+
+
+def fetch_users():
+	global USER
+	[USER.append(user['user_id']) for user in get_next_users_to_display(50)]
+
+def fetch_tweets():
+	global TWEET
+	for i in range(0, min(len(USER), 2) - len(TWEET)):
+		user_tweets = [tweet["text"]
+					   for tweet
+					   in get_tweets(filters={"user.id": {"$eq": USER[len(TWEET) + i]}})]
+        if len(user_tweets) > 1:
+            TWEET.append(user_tweets)
+
 
 @main.route('/tweets')
 def tweets():
-    global TWEET
-    global USER
-    # Get untagged tweets
-    print "Get Users"
-    [USER.append(user['user_id']) for user in get_next_users_to_display(2)]
-    for user in USER:
-        user_tweets = []
-        tweets = get_tweets(filters={"user.id": {"$eq": user}})
-        [user_tweets.append(tweet['text']) for tweet in tweets]
-        if len(user_tweets) > 1:
-            TWEET.append(user_tweets)
-    return render_template("tweets.html", tweets=TWEET[0], user=USER[0])
+	if not USER:
+		fetch_users()
+	fetch_tweets()
+
+	return render_template("tweets.html", tweets=TWEET[0], user=USER[0])
 
 @socketio.on('add-positive', namespace='/tweets')
 def add_positive(user_id):
