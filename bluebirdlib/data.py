@@ -89,7 +89,10 @@ def update_user(filter={}, query={}, connection=None):
     else:
         db = connection
     collection = db["users"]
+    print "filter: ", filter
+    print "query: ", query
     result = collection.update(filter, query)
+    print "result: ", result
     return result
 
 

@@ -23,13 +23,14 @@ def get_next_users_to_display(limit=50, connection=None):
     return [x for x in get_users(filters, limit=limit, connection=connection)]
 
 
-def add_control_to_user(user_id, control):
+def add_control_to_user(user_id, control, connection=None):
     filters = {"user_id": user_id}
     query = {
         "$push": {
             "controls": control
         }
     }
+    print "in add control"
     return update_user(filters, query, connection=connection)
 
 

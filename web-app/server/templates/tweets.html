@@ -14,45 +14,44 @@
   <h1>Twitter tagger</h1>
 
   <table class="table">
-    <thead>
-      <tr>
-        <th>Tweet</th>
-      </tr>
-    </thead>
-    <tbody>
-	{% for tweet in tweets %}
-      <tr>
-        <td>{{ tweet["text"] }}</td>
-      </tr>
-	{% endfor %}
-		<td>
-	<button type="button" class="btn btn-success" status="negative" uid='{{ user["id"] }}'>Négatif</button>
-	<button type="button" class="btn btn-danger" status="positive" uid='{{ user["id"] }}'>Positif</button>
-		</td>
-    </tbody>
+  <thead>
+    <tr>
+      <th>Tweets by user</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for tweet in tweets %}
+    <tr>
+      <td>{{ tweet }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <td>
+    <button type="button" class="btn btn-success" status="negative" uid='{{ user }}'>Négatif</button>
+    <button type="button" class="btn btn-danger" status="positive" uid='{{ user }}'>Positif</button>
+  </td>
   </table>
 {% endblock %}
 
 {% block scripts %}
-	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-	<script type="text/javascript" charset="utf-8">
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+  <script type="text/javascript" charset="utf-8">
 
-		$(document).ready(function(){
-			namespace="/tweets";
-			var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+    $(document).ready(function(){
+      namespace="/tweets";
+      var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
-			$('button').click(function() {
-				$(this).parent().parent().hide();
-				if($(this).attr("status") == "positive") {
-					socket.emit('add-positive', $(this).attr("tid"));
-				} else {
-					socket.emit('add-negative', $(this).attr("tid"));
-				}
-			});
+      $('button').click(function() {
+        $(this).parent().parent().hide();
+        if($(this).attr("status") == "positive") {
+          socket.emit('add-positive', $(this).attr("uid"));
+        } else {
+          socket.emit('add-negative', $(this).attr("uid"));
+        }
+      });
 
-
-		});
-	</script>
+    });
+  </script>
 
 {% endblock %}
