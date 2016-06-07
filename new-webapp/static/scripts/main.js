@@ -6,12 +6,7 @@
  *          - ChoiceBox
  *              - Choice
  */
- // tutorial1.js
 
- var data = [
-   {id: 1, text: "This is one comment"},
-   {id: 2, text: "This is *another* comment"}
- ];
 
 var Tweet = React.createClass({
     rawMarkup: function() {
