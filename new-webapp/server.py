@@ -1,6 +1,12 @@
+from bluebirdlib.data import get_tweets
+from bluebirdlib.user import get_next_users_to_display
+from flask import Flask
+from flask import Response
+from flask import jsonify
+from flask import request
 import os
-import json
-from flask import Flask, Response, request
+import time
+
 
 app = Flask(__name__, static_url_path="")
 app.add_url_rule("/", "root", lambda: app.send_static_file("index.html"))
@@ -9,46 +15,38 @@ server_path = "new-webapp"
 save_file = "tweets.json"
 save_file_path = os.path.join(server_path, save_file)
 
-@app.route('/api/tweets', methods=['GET', 'POST'])
-def comments_handler():
 
-    if save_file not in os.listdir(server_path):
-        with open(save_file_path, "w+") as f:
-            json.dumps({})
-
-    with open(save_file_path, "r") as f:
-        tweets = json.loads(f.read())
-
-    if not tweets:
-        # fetch_users
-        print "Have to fetch users"
-    for user in tweets:
-        if tweets[user]:
-            user_tweets = tweets[user]
-            del tweets[users]
-            with open(save_file_path, "w") as f:
-                f.write(json.dumps(tweets, indent=4, separators=(',', ': ')))
-            return user_tweets
-
-    for idx, user in enumerate(tweets):
-        if idx < 2:
-            tweets[user] = fetch_tweets(user)
-        else:
-            break
-
-    # return Response(
-    #     json.dumps(tweets),
-    #     mimetype='application/json',
-    #     headers={
-    #         'Cache-Control': 'no-cache',
-    #         'Access-Control-Allow-Origin': '*'
-    #     }
-    # )
-
-@app.route('/api/answer', methods=['POST']):
-    return
+@app.route('/fetch_users', methods=['GET'])
+def fetch_users():
+    users = [x["user_id"] for x in get_next_users_to_display(10)]
+    resp = jsonify({'users': users})
+    resp.status_code = 200
+    return resp
 
 
+@app.route('/fetch_tweets/<user_id>', methods=['GET'])
+def fetch_user_tweets(user_id):
+    tweets = [tweet['text'] for tweet in get_tweets(filters={"user.id": {"$eq": long(user_id)}})]
+    resp = jsonify({"tweets": tweets})
+    resp.status_code = 200
+    return resp
+
+
+@app.route('/tag_user', methods=['POST'])
+def tag_user():
+    params = request.json
+    user_id = params.get("user_id", None)
+    tag_name = params.get("tag_name", None)
+    tag_value = bool(params.get("tag_value", False))
+
+    query = {
+        "date": time.strftime('%Y-%m-%d %H:%M:%S'),
+        tag_name: tag_value
+    }
+    # add_control_to_user(long(user_id), query)
+    resp = jsonify({})
+    resp.status_code = 200
+    return resp
 
 if __name__ == '__main__':
     app.run(port=int(os.environ.get("PORT", 3000)), debug=True)

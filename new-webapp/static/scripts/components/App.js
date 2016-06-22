@@ -81,7 +81,11 @@ var TweetList = React.createClass({
    }
  });
 
- ReactDOM.render(
-     <UserBox url="/api/tweets" />,
-     document.getElementById('content')
- );
+
+const App = () => (
+    <div>
+        <UserBox url="/api/tweets" />
+    </div>
+)
+
+export default App
