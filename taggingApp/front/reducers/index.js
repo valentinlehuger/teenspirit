@@ -44,9 +44,7 @@ function apiUsers(state = {}, action) {
 		case INVALIDATE_USERS:
 		case RECEIVE_USERS:
 		case REQUEST_USERS:
-			return Object.assign({}, state,
-				 users(state, action) // not sure
-			)
+			return Object.assign({}, state, users(state, action))
 		default:
 			return state
 	}

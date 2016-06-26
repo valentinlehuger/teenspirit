@@ -11,10 +11,12 @@ function requestUsers() {
 }
 
 function receiveUsers(json) {
-  return {
-    type: RECEIVE_USERS,
-    users: json.users
-  }
+	return dispatch => {
+  		return {
+    		type: RECEIVE_USERS,
+    		users: json.users
+  		}
+	}
 }
 
 export function invalidateUsers() {
@@ -23,22 +25,26 @@ export function invalidateUsers() {
   }
 }
 
-function fetchUsers() {
+function fetchUsers(n) {
   return dispatch => {
+	console.log(n)
     dispatch(requestUsers())
-    return fetch(`http://127.0.0.1:3033/fetch_users`)
+    return fetch(`http://127.0.0.1:3033/fetch_users/${n}`)
       .then(response => response.json())
       .then(json => dispatch(receiveUsers(json)))
   }
 }
 
 function shouldFetchUsers(state) {
-	console.log("shouldFetchUsers", state)
-  const posts = state.users
-  if (!posts) {
+  const users = state.users
+  console.log("shouldFetchUsers", state, !users)
+  if (!users) {
     return true
   }
-  if (posts.isFetching) {
+  if (users.length < 10) {
+	  return true
+  }
+  if (state.isFetching) {
     return false
   }
   return posts.didInvalidate
@@ -46,8 +52,13 @@ function shouldFetchUsers(state) {
 
 export function fetchUsersIfNeeded() {
   return (dispatch, getState) => {
-    if (shouldFetchUsers(getState())) {
-      return dispatch(fetchUsers())
+	const state = getState()
+    if (shouldFetchUsers(state)) {
+		var n = 10
+		if (state.users) {
+			n = n - state.users.length
+		}
+		return dispatch(fetchUsers(n))
     }
   }
 }

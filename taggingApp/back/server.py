@@ -1,24 +1,19 @@
 from bluebirdlib.data import get_tweets
 from bluebirdlib.user import get_next_users_to_display
+from datetime import timedelta
 from flask import Flask
 from flask import Response
+from flask import current_app
 from flask import jsonify
+from flask import make_response
 from flask import request
+from functools import update_wrapper
 import os
 import time
 
+MAX_USER = 4
 
 app = Flask(__name__, static_url_path="")
-
-server_path = "new-webapp"
-save_file = "tweets.json"
-save_file_path = os.path.join(server_path, save_file)
-
-
-from datetime import timedelta
-from flask import make_response, current_app
-from functools import update_wrapper
-
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
@@ -62,19 +57,23 @@ def crossdomain(origin=None, methods=None, headers=None,
     return decorator
 
 
-@app.route('/fetch_users', methods=['GET'])
+@app.route('/fetch_users/<int:nb_users>', methods=['GET'])
 @crossdomain(origin='*')
-def fetch_users():
-    users = [x["user_id"] for x in get_next_users_to_display(10)]
-    resp = jsonify({'users': users})
-    resp.status_code = 200
-    return resp
+def fetch_users(nb_users):
+	if nb_users < 0:
+		return make_response("ERROR", 404)
+	if nb_users > MAX_USER:
+		nb_users = MAX_USER
+	users = [x['user_id'] for x in get_next_users_to_display(nb_users)]
+	resp = jsonify({'users': users})
+	resp.status_code = 200
+	return resp
 
 
 @app.route('/fetch_tweets/<user_id>', methods=['GET'])
 def fetch_user_tweets(user_id):
-    tweets = [tweet['text'] for tweet in get_tweets(filters={"user.id": {"$eq": long(user_id)}})]
-    resp = jsonify({"tweets": tweets})
+    tweets = [tweet['text'] for tweet in get_tweets(filters={'user.id': {'$eq': long(user_id)}})]
+    resp = jsonify({'tweets': tweets})
     resp.status_code = 200
     return resp
 
