@@ -1,21 +1,15 @@
+import 'babel-polyfill'
 import React from 'react'
-import ReactDOM from 'react-dom'
-import { createStore } from 'redux'
-import TestComponent from './components/TestComponent'
-import testReducer from './reducers'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import App from './containers/App'
+import configureStore from './store/configureStore'
 
-const store = createStore(testReducer)
-const rootEl = document.getElementById('root')
+const store = configureStore()
 
-function render() {
-  ReactDOM.render(
-    <TestComponent
-      value={store.getState()}
-      fetchUsers={() => store.dispatch({type: 'FETCH_USERS'})}
-    />,
-    rootEl
-  )
-}
-
-render()
-store.subscribe(render)
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
