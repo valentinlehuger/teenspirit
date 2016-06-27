@@ -11,7 +11,7 @@ import {
 } from '../actions'
 
 function users(state = {
-	isFetching: false,
+	isFetchingUsers: false,
 	didInvalidate: false,
 	users: []
 }, action) {
@@ -23,13 +23,13 @@ function users(state = {
 			})
 		case REQUEST_USERS:
 			return Object.assign({}, state, {
-				isFetching: true,
+				isFetchingUsers: true,
 				didInvalidate: false
 			})
 		case RECEIVE_USERS:
 			console.log("In users.RECEIVE_USERS", action.users)
 			return Object.assign({}, state, {
-				isFetching: false,
+				isFetchingUsers: false,
 				didInvalidate: false,
 				users: action.users
 			})

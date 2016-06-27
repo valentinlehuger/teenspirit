@@ -15,11 +15,11 @@ class App extends Component {
 	}
 
 	render() {
-		const { users, isFetching } = this.props
+		const { users, isFetchingUsers } = this.props
 		return (
 			<p>
 				users {users}<br/>
-				isFetching {isFetching}
+				isFetchingUsers {isFetchingUsers}
 			</p>
 		)
 	}
@@ -27,24 +27,24 @@ class App extends Component {
 
 // App.propTypes = {
 // 	users: propTypes.array.isRequired,
-// 	isFetching: PropTypes.bool.isRequired,
+// 	isFetchingUsers: PropTypes.bool.isRequired,
 // 	dispatch: PropTypes.func.isRequired
 // }
 
 function mapStateToProps(state) {
 	const { apiUsers } = state
-	console.log("mapStateTopProps", state, isFetching, users)
+	console.log("mapStateTopProps", state, isFetchingUsers, users)
 	const {
-		isFetching,
+		isFetchingUsers,
 		users: users
 	} = apiUsers || {
-		isFetching: true,
+		isFetchingUsers: true,
 		users: []
 	}
 
 	return {
 		users,
-		isFetching
+		isFetchingUsers
 	}
 }
 

@@ -42,7 +42,7 @@ function shouldFetchUsers(state) {
   if (users.length < 10) {
 	  return true
   }
-  if (state.isFetching) {
+  if (state.isFetchingUsers) {
     return false
   }
   return posts.didInvalidate
