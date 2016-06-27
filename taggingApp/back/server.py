@@ -71,6 +71,7 @@ def fetch_users(nb_users):
 
 
 @app.route('/fetch_tweets/<user_id>', methods=['GET'])
+@crossdomain(origin='*')
 def fetch_user_tweets(user_id):
     tweets = [tweet['text'] for tweet in get_tweets(filters={'user.id': {'$eq': long(user_id)}})]
     resp = jsonify({'tweets': tweets})
