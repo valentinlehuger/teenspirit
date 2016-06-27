@@ -11,12 +11,10 @@ function requestUsers() {
 }
 
 function receiveUsers(json) {
-	return dispatch => {
-  		return {
-    		type: RECEIVE_USERS,
-    		users: json.users
-  		}
-	}
+  return {
+    type: RECEIVE_USERS,
+    users: json.users
+  }
 }
 
 export function invalidateUsers() {
