@@ -7,10 +7,10 @@
 
 import { combineReducers } from 'redux'
 import {
-	REQUEST_USERS, RECEIVE_USERS, INVALIDATE_USERS
+	REQUEST_USERS, RECEIVE_USERS, INVALIDATE_USERS, REQUEST_TWEETS, RECEIVE_TWEETS
 } from '../actions'
 
-function users(state = {
+function apiUsers(state = {
 	isFetchingUsers: false,
 	didInvalidate: false,
 	users: []
@@ -38,24 +38,43 @@ function users(state = {
 	}
 }
 
-function apiUsers(state = {
-	isFetchingUsers: false,
-	didInvalidate: false,
-	users: []
+function apiTweets(state = {
+	tweets: []
 }, action) {
-	console.log("In apiUsers", state, action)
+	console.log("Enter in tweets reducer", action.type)
 	switch (action.type) {
-		case INVALIDATE_USERS:
-		case RECEIVE_USERS:
-		case REQUEST_USERS:
-			return Object.assign({}, state, users(state, action))
+		case REQUEST_TWEETS:
+			console.log("In tweets.REQUEST_TWEETS", action.tweets)
+			return Object.assign({}, state, {})
+		case RECEIVE_TWEETS:
+			console.log("In tweets.RECEIVE_TWEETS", action.tweets)
+			return Object.assign({}, state, {
+				tweets: action.tweets
+			})
 		default:
 			return state
 	}
 }
 
+// function apiUsers(state = {
+// 	isFetchingUsers: false,
+// 	didInvalidate: false,
+// 	users: []
+// }, action) {
+// 	console.log("In apiUsers", state, action)
+// 	switch (action.type) {
+// 		case INVALIDATE_USERS:
+// 		case RECEIVE_USERS:
+// 		case REQUEST_USERS:
+// 			return Object.assign({}, state, users(state, action))
+// 		default:
+// 			return state
+// 	}
+// }
+
 const rootReducer = combineReducers({
-	apiUsers
+	apiUsers,
+	apiTweets
 })
 
 export default rootReducer

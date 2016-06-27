@@ -3,6 +3,8 @@ import fetch from 'isomorphic-fetch'
 export const REQUEST_USERS = 'REQUEST_USERS'
 export const RECEIVE_USERS = 'RECEIVE_USERS'
 export const INVALIDATE_USERS = 'INVALIDATE_USERS'
+export const REQUEST_TWEETS = 'REQUEST_TWEETS'
+export const RECEIVE_TWEETS = 'RECEIVE_TWEETS'
 
 function requestUsers() {
   return {
@@ -10,10 +12,26 @@ function requestUsers() {
   }
 }
 
+function requestTweets() {
+  return {
+    type: REQUEST_TWEETS
+  }
+}
+
 function receiveUsers(json) {
+  console.log("in receiveUsers")
   return {
     type: RECEIVE_USERS,
     users: json.users
+  }
+}
+
+function receiveTweets(json) {
+  console.log("in receiveTweets")
+  console.log("tweets: " + JSON.stringify(json.tweets, null, 2))
+  return {
+    type: RECEIVE_TWEETS,
+    tweets: json.tweets
   }
 }
 
@@ -30,6 +48,16 @@ function fetchUsers(n) {
     return fetch(`http://127.0.0.1:3033/fetch_users/${n}`)
       .then(response => response.json())
       .then(json => dispatch(receiveUsers(json)))
+  }
+}
+
+export function fetchTweets(user) {
+  console.log("in fetchTweets: " + user)
+  return dispatch => {
+    dispatch(requestTweets())
+    return fetch(`http://127.0.0.1:3033/fetch_tweets/${user}`)
+      .then(response => response.json())
+      .then(json => dispatch(receiveTweets(json)))
   }
 }
 
