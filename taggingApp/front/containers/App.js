@@ -25,18 +25,18 @@ class App extends Component {
 	}
 }
 
-// App.propTypes = {
-// 	users: propTypes.array.isRequired,
-// 	isFetchingUsers: PropTypes.bool.isRequired,
-// 	dispatch: PropTypes.func.isRequired
-// }
+App.propTypes = {
+	users: PropTypes.array.isRequired,
+	isFetchingUsers: PropTypes.bool.isRequired,
+	dispatch: PropTypes.func.isRequired
+}
 
 function mapStateToProps(state) {
 	const { apiUsers } = state
-	console.log("mapStateTopProps", state, isFetchingUsers, users)
+	console.log("mapStateTopProps", apiUsers)
 	const {
 		isFetchingUsers,
-		users: users
+		users
 	} = apiUsers || {
 		isFetchingUsers: true,
 		users: []

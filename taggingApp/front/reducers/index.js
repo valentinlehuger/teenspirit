@@ -38,7 +38,11 @@ function users(state = {
 	}
 }
 
-function apiUsers(state = {}, action) {
+function apiUsers(state = {
+	isFetchingUsers: false,
+	didInvalidate: false,
+	users: []
+}, action) {
 	console.log("In apiUsers", state, action)
 	switch (action.type) {
 		case INVALIDATE_USERS:
