@@ -7,7 +7,9 @@
 
 import { combineReducers } from 'redux'
 import {
-	REQUEST_USERS, RECEIVE_USERS, INVALIDATE_USERS, REQUEST_TWEETS, RECEIVE_TWEETS
+	REQUEST_USERS, RECEIVE_USERS, INVALIDATE_USERS,
+	REQUEST_TWEETS, RECEIVE_TWEETS,
+	VALIDATE_USER, UNVALIDATE_USER
 } from '../actions'
 
 function apiUsers(state = {
@@ -31,7 +33,18 @@ function apiUsers(state = {
 			return Object.assign({}, state, {
 				isFetchingUsers: false,
 				didInvalidate: false,
-				users: action.users
+				users: action.users,
+				current_user: action.current_user
+			})
+		case VALIDATE_USER:
+		console.log("In users.VALIDATE_USER")
+			return Object.assign({}, state, {
+				current_user: ""
+			})
+		case UNVALIDATE_USER:
+			console.log("In users.UNVALIDATE_USER")
+			return Object.assign({}, state, {
+				current_user: ""
 			})
 		default:
 			return state
