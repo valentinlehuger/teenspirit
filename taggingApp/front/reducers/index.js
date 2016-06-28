@@ -56,22 +56,6 @@ function apiTweets(state = {
 	}
 }
 
-// function apiUsers(state = {
-// 	isFetchingUsers: false,
-// 	didInvalidate: false,
-// 	users: []
-// }, action) {
-// 	console.log("In apiUsers", state, action)
-// 	switch (action.type) {
-// 		case INVALIDATE_USERS:
-// 		case RECEIVE_USERS:
-// 		case REQUEST_USERS:
-// 			return Object.assign({}, state, users(state, action))
-// 		default:
-// 			return state
-// 	}
-// }
-
 const rootReducer = combineReducers({
 	apiUsers,
 	apiTweets
