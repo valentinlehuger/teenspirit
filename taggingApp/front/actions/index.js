@@ -18,8 +18,9 @@ function requestTweets() {
   }
 }
 
-function receiveUsers(json) {
+function receiveUsers(dispatch, json) {
   console.log("in receiveUsers")
+  dispatch(fetchTweets(json.users[0]))
   return {
     type: RECEIVE_USERS,
     users: json.users
@@ -47,7 +48,7 @@ function fetchUsers(n) {
     dispatch(requestUsers())
     return fetch(`http://127.0.0.1:3033/fetch_users/${n}`)
       .then(response => response.json())
-      .then(json => dispatch(receiveUsers(json)))
+      .then(json => dispatch(receiveUsers(dispatch, json)))
   }
 }
 
@@ -87,4 +88,13 @@ export function fetchUsersIfNeeded() {
 		return dispatch(fetchUsers(n))
     }
   }
+}
+
+export function fetchTweetsIfNeeded() {
+    return (dispatch, getState) => {
+        const state = getState()
+        console.log("In fetchUsersIfNeeded", state, state.apiUsers.users.length, state.apiTweets.tweets.length)
+        if (state.apiUsers.users.length > 0 && state.apiTweets.tweets.length < 10)
+            return dispatch(fetchTweets(state.apiUsers.users[0]))
+    }
 }

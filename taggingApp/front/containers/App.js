@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { fetchUsersIfNeeded, invalidateUsers, fetchTweets } from '../actions'
+import { fetchUsersIfNeeded, invalidateUsers, fetchTweetsIfNeeded } from '../actions'
 
 
 class App extends Component {
@@ -12,14 +12,15 @@ class App extends Component {
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(fetchUsersIfNeeded())
+        dispatch(fetchTweetsIfNeeded())
     }
 
-    componentWillReceiveProps(nextProps) {
-        const { dispatch, tweets, users } = nextProps
-        for (var i = 0; i < nextProps.users.length; i++) { 
-            dispatch(fetchTweets(nextProps.users[i]))
-        }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     const { dispatch, tweets, users } = nextProps
+    //     for (var i = 0; i < nextProps.users.length; i++) {
+    //         dispatch(fetchTweets(nextProps.users[i]))
+    //     }
+    // }
 
     render() {
         const { tweets, users, isFetchingUsers, dispatch } = this.props
