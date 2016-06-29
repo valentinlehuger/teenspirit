@@ -10,7 +10,7 @@ export default class YesButton extends Component {
 
 	render() {
 		return (
-			<RaisedButton label='YES' primary={true} />
+			<RaisedButton label='Validate' primary={true} />
 		)
 	}
 }

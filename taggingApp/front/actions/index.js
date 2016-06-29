@@ -5,6 +5,8 @@ export const RECEIVE_USERS = 'RECEIVE_USERS'
 export const INVALIDATE_USERS = 'INVALIDATE_USERS'
 export const REQUEST_TWEETS = 'REQUEST_TWEETS'
 export const RECEIVE_TWEETS = 'RECEIVE_TWEETS'
+export const VALIDATE_USER = 'VALIDATE_USER'
+export const UNVALIDATE_USER = 'UNVALIDATE_USER'
 
 function requestUsers() {
   return {
@@ -20,10 +22,12 @@ function requestTweets() {
 
 function receiveUsers(dispatch, json) {
   console.log("in receiveUsers")
-  dispatch(fetchTweets(json.users[0]))
+	var current_user = json.users.shift()
+  dispatch(fetchTweets(current_user))
   return {
     type: RECEIVE_USERS,
-    users: json.users
+    users: json.users,
+	current_user: current_user.toString()
   }
 }
 
@@ -97,4 +101,20 @@ export function fetchTweetsIfNeeded() {
         if (state.apiUsers.users.length > 0 && state.apiTweets.tweets.length < 10)
             return dispatch(fetchTweets(state.apiUsers.users[0]))
     }
+}
+
+export function validateUser(userId, dispatch) {
+	dispatch(fetchUsersIfNeeded())
+	return {
+		type: VALIDATE_USER,
+		userId: userId
+	}
+}
+
+export function unvalidateUser(userId, dispatch) {
+	dispatch(fetchUsersIfNeeded())
+	return {
+		type: UNVALIDATE_USER,
+		userId: userId
+	}
 }

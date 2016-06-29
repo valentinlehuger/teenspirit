@@ -10,7 +10,7 @@ export default class NoButton extends Component {
 
 	render() {
 		return (
-			<RaisedButton label='NO' secondary={true} />
+			<RaisedButton label='Unvalidate' secondary={true} />
 		)
 	}
 }
