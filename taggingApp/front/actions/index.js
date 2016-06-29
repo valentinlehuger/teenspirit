@@ -22,12 +22,9 @@ function requestTweets() {
 
 function receiveUsers(dispatch, json) {
   console.log("in receiveUsers")
-	var current_user = json.users.shift()
-  dispatch(fetchTweets(current_user))
   return {
     type: RECEIVE_USERS,
-    users: json.users,
-	current_user: current_user.toString()
+    users: json.users
   }
 }
 
@@ -37,7 +34,7 @@ function receiveTweets(json, user) {
   return {
     type: RECEIVE_TWEETS,
     tweets: json.tweets,
-    user: user
+    current_user: user
   }
 }
 
@@ -98,9 +95,9 @@ export function fetchUsersIfNeeded() {
 export function fetchTweetsIfNeeded() {
     return (dispatch, getState) => {
         const state = getState()
-        console.log("In fetchUsersIfNeeded", state, state.apiUsers.users.length, state.apiTweets.tweets.length)
-        if (state.apiUsers.users.length > 0 && state.apiTweets.tweets.length < 10)
-            return dispatch(fetchTweets(state.apiUsers.users[0]))
+        console.log("In fetchTweetsIfNeeded", state, state.apiTweets.users.length, state.apiTweets.tweets.length)
+        if (state.apiTweets.users.length > 0 && (!state.apiTweets.tweets.length || state.apiTweets.tweets.length < 10))
+            return dispatch(fetchTweets(state.apiTweets.users[0]))
     }
 }
 

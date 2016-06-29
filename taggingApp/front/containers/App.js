@@ -14,11 +14,18 @@ class App extends Component {
         super(props)
 		this.handleValidate = this.handleValidate.bind(this)
 		this.handleUnvalidate = this.handleUnvalidate.bind(this)
+		this.intervalFunction = this.intervalFunction.bind(this)
     }
+
+	intervalFunction() {
+		const { dispatch } = this.props
+		dispatch(fetchTweetsIfNeeded())
+	}
 
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(fetchUsersIfNeeded())
+		setInterval(this.intervalFunction, 10000)
     }
 
 	handleValidate() {
@@ -46,12 +53,11 @@ class App extends Component {
 	}
 
     render() {
-        const { tweets, users, isFetchingUsers, dispatch } = this.props
+        const { tweets, users, current_user, dispatch } = this.props
+		console.log("In app render", tweets, tweets[current_user])
         return (
             <div>
-                users {users}<br/>
-                isFetchingUsers {isFetchingUsers}<br/>
-				<Tweets tweets={tweets} />
+				<Tweets tweets={tweets[current_user]} />
                 <TagButton label="Depressed" handleClick={this.handleValidate} />
                 <TagButton label="Not depressed" handleClick={this.handleUnvalidate} />
             </div>
@@ -61,28 +67,24 @@ class App extends Component {
 
 App.propTypes = {
     users: PropTypes.array.isRequired,
-    // tweets: PropTypes.object.isRequired,
+    tweets: PropTypes.object.isRequired,
 	current_user: PropTypes.string,
     isFetchingUsers: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
-    const { apiUsers } = state
     const { apiTweets } = state
-    console.log("mapStateTopProps", apiUsers, apiTweets)
+    console.log("mapStateTopProps", apiTweets)
     const {
-        isFetchingUsers,
+		isFetchingUsers,
         users,
-		current_user
-    } = apiUsers || {
-        isFetchingUsers: true,
-        users: [],
-		current_user: ''
-    }
-    const {
+		current_user,
         tweets
     } = apiTweets || {
+		isFetchingUsers: true,
+        users: [],
+		current_user: '',
         tweets: {}
     }
 

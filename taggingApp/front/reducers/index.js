@@ -12,10 +12,12 @@ import {
 	VALIDATE_USER, UNVALIDATE_USER
 } from '../actions'
 
-function apiUsers(state = {
+function apiTweets(state = {
 	isFetchingUsers: false,
 	didInvalidate: false,
-	users: []
+	users: [],
+	tweets: {},
+	current_user: null
 }, action) {
 	console.log("Enter in users reducer")
 	switch (action.type) {
@@ -33,8 +35,7 @@ function apiUsers(state = {
 			return Object.assign({}, state, {
 				isFetchingUsers: false,
 				didInvalidate: false,
-				users: action.users,
-				current_user: action.current_user
+				users: action.users
 			})
 		case VALIDATE_USER:
 		    console.log("In users.VALIDATE_USER")
@@ -52,26 +53,20 @@ function apiUsers(state = {
 				current_user: undefined,
                 tweets: tweets_
 			})
-		default:
-			return state
-	}
-}
-
-function apiTweets(state = {
-	tweets: {}
-}, action) {
-	console.log("Enter in tweets reducer", action.type)
-	switch (action.type) {
 		case REQUEST_TWEETS:
 			console.log("In tweets.REQUEST_TWEETS", action.tweets)
 			return Object.assign({}, state, {})
 		case RECEIVE_TWEETS:
 			console.log("In tweets.RECEIVE_TWEETS", action.tweets)
-            state.tweets[action.user] = action.tweets
+            state.tweets[action.current_user] = action.tweets
             var tweets_ = state.tweets
-            tweets_[action.user] = action.tweets
+            tweets_[action.current_user] = action.tweets
+			var users_ = state.users
+			users_.shift()
 			return Object.assign({}, state, {
-                tweets: tweets_
+                tweets: tweets_,
+				users: users_,
+				current_user: action.current_user
 			})
 		default:
 			return state
@@ -79,7 +74,6 @@ function apiTweets(state = {
 }
 
 const rootReducer = combineReducers({
-	apiUsers,
 	apiTweets
 })
 
