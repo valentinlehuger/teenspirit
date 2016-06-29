@@ -4,8 +4,8 @@ import { fetchUsersIfNeeded, invalidateUsers,
 		fetchTweetsIfNeeded,
 		validateUser, unvalidateUser } from '../actions'
 import Tweets from '../components/Tweets'
-import YesButton from '../components/YesButton'
-import NoButton from '../components/NoButton'
+import TagButton from '../components/TagButton'
+
 
 class App extends Component {
 
@@ -52,13 +52,8 @@ class App extends Component {
                 users {users}<br/>
                 isFetchingUsers {isFetchingUsers}<br/>
 				<Tweets tweets={tweets} />
-                {/* <YesButton /> <NoButton /> -->*/}
-				<a href="#" onClick={this.handleValidate}>
-	             	Validate
-				 </a>
-				 <a href="#" onClick={this.handleUnvalidate}>
- 	             	Unvalidate
- 				 </a>
+                <TagButton label="Depressed" handleClick={this.handleValidate} />
+                <TagButton label="Not depressed" handleClick={this.handleUnvalidate} />
             </div>
         )
     }
