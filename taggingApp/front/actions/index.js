@@ -31,12 +31,13 @@ function receiveUsers(dispatch, json) {
   }
 }
 
-function receiveTweets(json) {
+function receiveTweets(json, user) {
   console.log("in receiveTweets")
   console.log("tweets: " + JSON.stringify(json.tweets, null, 2))
   return {
     type: RECEIVE_TWEETS,
-    tweets: json.tweets
+    tweets: json.tweets,
+    user: user
   }
 }
 
@@ -62,7 +63,7 @@ export function fetchTweets(user) {
     dispatch(requestTweets())
     return fetch(`http://127.0.0.1:3033/fetch_tweets/${user}`)
       .then(response => response.json())
-      .then(json => dispatch(receiveTweets(json)))
+      .then(json => dispatch(receiveTweets(json, user)))
   }
 }
 

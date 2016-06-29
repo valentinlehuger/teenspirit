@@ -4,14 +4,12 @@ export default class Tweets extends Component {
 	render() {
 		return (
 			<ul>
-	          {this.props.tweets.map((tweet, i) =>
-	            <li key={i}>{tweet}</li>
-	          )}
+            {this.props.tweets}
 	        </ul>
 		)
 	}
 }
 
 Tweets.propTypes = {
-  tweets: PropTypes.array.isRequired
+  tweets: PropTypes.object.isRequired
 }

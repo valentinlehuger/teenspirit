@@ -17,6 +17,7 @@ MAX_USER = 4
 app = Flask(__name__, static_url_path="")
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
+
 @app.route('/fetch_users/<int:nb_users>', methods=['GET'])
 def fetch_users(nb_users):
     if nb_users < 0:

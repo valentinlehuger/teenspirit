@@ -37,14 +37,20 @@ function apiUsers(state = {
 				current_user: action.current_user
 			})
 		case VALIDATE_USER:
-		console.log("In users.VALIDATE_USER")
+		    console.log("In users.VALIDATE_USER")
+            var tweets_ = state.tweets
+            delete tweets_[state.current_user]
 			return Object.assign({}, state, {
-				current_user: ""
+				current_user: undefined,
+                tweets: tweets_
 			})
 		case UNVALIDATE_USER:
 			console.log("In users.UNVALIDATE_USER")
+            var tweets_ = state.tweets
+            delete tweets_[state.current_user]
 			return Object.assign({}, state, {
-				current_user: ""
+				current_user: undefined,
+                tweets: tweets_
 			})
 		default:
 			return state
@@ -52,7 +58,7 @@ function apiUsers(state = {
 }
 
 function apiTweets(state = {
-	tweets: []
+	tweets: {}
 }, action) {
 	console.log("Enter in tweets reducer", action.type)
 	switch (action.type) {
@@ -61,8 +67,11 @@ function apiTweets(state = {
 			return Object.assign({}, state, {})
 		case RECEIVE_TWEETS:
 			console.log("In tweets.RECEIVE_TWEETS", action.tweets)
+            state.tweets[action.user] = action.tweets
+            var tweets_ = state.tweets
+            tweets_[action.user] = action.tweets
 			return Object.assign({}, state, {
-				tweets: action.tweets
+                tweets: tweets_
 			})
 		default:
 			return state

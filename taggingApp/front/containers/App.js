@@ -61,7 +61,7 @@ class App extends Component {
 
 App.propTypes = {
     users: PropTypes.array.isRequired,
-    tweets: PropTypes.array.isRequired,
+    // tweets: PropTypes.object.isRequired,
 	current_user: PropTypes.string,
     isFetchingUsers: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -70,7 +70,7 @@ App.propTypes = {
 function mapStateToProps(state) {
     const { apiUsers } = state
     const { apiTweets } = state
-    console.log("mapStateTopProps", apiUsers)
+    console.log("mapStateTopProps", apiUsers, apiTweets)
     const {
         isFetchingUsers,
         users,
@@ -83,7 +83,7 @@ function mapStateToProps(state) {
     const {
         tweets
     } = apiTweets || {
-        tweets: []
+        tweets: {}
     }
 
     return {
