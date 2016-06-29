@@ -2,8 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { fetchUsersIfNeeded, invalidateUsers, fetchTweetsIfNeeded } from '../actions'
 import Tweets from '../components/Tweets'
+import YesButton from '../components/YesButton'
+import NoButton from '../components/NoButton'
 
 class App extends Component {
+
     constructor(props) {
         console.log("App.constructor", props)
         super(props)
@@ -22,6 +25,7 @@ class App extends Component {
                 users {users}<br/>
                 isFetchingUsers {isFetchingUsers}<br/>
 				<Tweets tweets={tweets} />
+                <YesButton /> <NoButton />
             </p>
         )
     }
