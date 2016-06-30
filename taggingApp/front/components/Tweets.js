@@ -17,5 +17,5 @@ export default class Tweets extends Component {
 }
 
 Tweets.propTypes = {
-  tweets: PropTypes.array.isRequired
+  tweets: PropTypes.array
 }

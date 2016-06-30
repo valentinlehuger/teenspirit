@@ -17,7 +17,7 @@ function apiTweets(state = {
 	didInvalidate: false,
 	users: [],
 	tweets: {},
-	current_user: null
+	current_user: undefined
 }, action) {
 	console.log("Enter in users reducer")
 	switch (action.type) {
@@ -58,15 +58,18 @@ function apiTweets(state = {
 			return Object.assign({}, state, {})
 		case RECEIVE_TWEETS:
 			console.log("In tweets.RECEIVE_TWEETS", action.tweets)
-            state.tweets[action.current_user] = action.tweets
+            state.tweets[action.user] = action.tweets
             var tweets_ = state.tweets
-            tweets_[action.current_user] = action.tweets
-			var users_ = state.users
-			users_.shift()
+            tweets_[action.user] = action.tweets
+            var users_ = state.users
+            var current_user =  state.current_user
+            if (!current_user) {
+    			current_user = users_.shift()
+            }
 			return Object.assign({}, state, {
                 tweets: tweets_,
 				users: users_,
-				current_user: action.current_user
+				current_user: current_user
 			})
 		default:
 			return state

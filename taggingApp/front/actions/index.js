@@ -34,7 +34,7 @@ function receiveTweets(json, user) {
   return {
     type: RECEIVE_TWEETS,
     tweets: json.tweets,
-    current_user: user
+    user: user
   }
 }
 

@@ -25,7 +25,7 @@ class App extends Component {
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(fetchUsersIfNeeded())
-		setInterval(this.intervalFunction, 10000)
+		setInterval(this.intervalFunction, 3000)
     }
 
 	handleValidate() {
@@ -54,7 +54,7 @@ class App extends Component {
 
     render() {
         const { tweets, users, current_user, dispatch } = this.props
-		console.log("In app render", tweets, tweets[current_user])
+		console.log("In app render", tweets, current_user, tweets[current_user])
         return (
             <div>
 				<Tweets tweets={tweets[current_user]} />
@@ -68,7 +68,7 @@ class App extends Component {
 App.propTypes = {
     users: PropTypes.array.isRequired,
     tweets: PropTypes.object.isRequired,
-	current_user: PropTypes.string,
+	current_user: PropTypes.number,
     isFetchingUsers: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
 }
