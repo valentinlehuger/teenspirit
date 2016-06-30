@@ -21,21 +21,18 @@ function apiTweets(state = {
 }, action) {
 	console.log("Enter in users reducer")
 	switch (action.type) {
-		case INVALIDATE_USERS:
-			return Object.assign({}, state, {
-				didInvalidate: true
-			})
 		case REQUEST_USERS:
-			return Object.assign({}, state, {
-				isFetchingUsers: true,
-				didInvalidate: false
-			})
+			return state
 		case RECEIVE_USERS:
 			console.log("In users.RECEIVE_USERS", action.users)
+            var users_ = state.users
+            if (users_) {
+                users_ = users_.concat(action.users)
+            } else {
+                users_ = action.users
+            }
 			return Object.assign({}, state, {
-				isFetchingUsers: false,
-				didInvalidate: false,
-				users: action.users
+				users: users_
 			})
 		case VALIDATE_USER:
 		    console.log("In users.VALIDATE_USER")

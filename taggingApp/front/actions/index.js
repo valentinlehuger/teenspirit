@@ -2,7 +2,6 @@ import fetch from 'isomorphic-fetch'
 
 export const REQUEST_USERS = 'REQUEST_USERS'
 export const RECEIVE_USERS = 'RECEIVE_USERS'
-export const INVALIDATE_USERS = 'INVALIDATE_USERS'
 export const REQUEST_TWEETS = 'REQUEST_TWEETS'
 export const RECEIVE_TWEETS = 'RECEIVE_TWEETS'
 export const VALIDATE_USER = 'VALIDATE_USER'
@@ -38,12 +37,6 @@ function receiveTweets(json, user) {
   }
 }
 
-export function invalidateUsers() {
-  return {
-    type: INVALIDATE_USERS
-  }
-}
-
 function fetchUsers(n) {
   return dispatch => {
 	console.log(n)
@@ -73,15 +66,11 @@ function shouldFetchUsers(state) {
   if (users.length < 10) {
 	  return true
   }
-  if (state.isFetchingUsers) {
-    return false
-  }
-  return posts.didInvalidate
 }
 
 export function fetchUsersIfNeeded() {
   return (dispatch, getState) => {
-	const state = getState()
+	const state = getState().apiTweets
     if (shouldFetchUsers(state)) {
 		var n = 10
 		if (state.users) {

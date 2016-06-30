@@ -69,7 +69,6 @@ App.propTypes = {
     users: PropTypes.array.isRequired,
     tweets: PropTypes.object.isRequired,
 	current_user: PropTypes.number,
-    isFetchingUsers: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
 }
 
@@ -77,12 +76,10 @@ function mapStateToProps(state) {
     const { apiTweets } = state
     console.log("mapStateTopProps", apiTweets)
     const {
-		isFetchingUsers,
         users,
 		current_user,
         tweets
     } = apiTweets || {
-		isFetchingUsers: true,
         users: [],
 		current_user: '',
         tweets: {}
@@ -90,7 +87,6 @@ function mapStateToProps(state) {
 
     return {
         users,
-        isFetchingUsers,
         tweets,
 		current_user
     }
