@@ -5,7 +5,8 @@ import { fetchUsersIfNeeded, invalidateUsers,
 		validateUser, unvalidateUser } from '../actions'
 import Tweets from '../components/Tweets'
 import TagButton from '../components/TagButton'
-
+import {Card, CardText} from 'material-ui/Card';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 class App extends Component {
 
@@ -13,9 +14,14 @@ class App extends Component {
         console.log("App.constructor", props)
         super(props)
 		this.handleValidate = this.handleValidate.bind(this)
-		this.handleUnvalidate = this.handleUnvalidate.bind(this)
+        this.handleUnvalidate = this.handleUnvalidate.bind(this)
+        this.handleIndesirable = this.handleIndesirable.bind(this)
 		this.intervalFunction = this.intervalFunction.bind(this)
     }
+
+    getChildContext() {
+    	return { muiTheme: getMuiTheme(Card, CardText) };
+	}
 
 	intervalFunction() {
 		const { dispatch } = this.props
@@ -52,16 +58,45 @@ class App extends Component {
 		}
 	}
 
+    handleIndesirable() {
+		const { dispatch, current_user } = this.props
+		console.log("In handleIndesirable", current_user)
+		if (current_user) {
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "http://localhost:3033/tag_user");
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			xmlhttp.send(JSON.stringify({user_id:current_user, tag_name: "indesirable", tag_value: true}));
+			dispatch(unvalidateUser(current_user, dispatch))
+		}
+	}
+
     render() {
         const { tweets, users, current_user, dispatch } = this.props
 		console.log("In app render", tweets, current_user, tweets[current_user])
-        return (
-            <div>
-				<Tweets tweets={tweets[current_user]} />
-                <TagButton label="Depressed" handleClick={this.handleValidate} />
-                <TagButton label="Not depressed" handleClick={this.handleUnvalidate} />
-            </div>
-        )
+        if (tweets[current_user])
+        {
+            return (
+                <div>
+                    <Card>
+                        <TagButton label="Depressed" handleClick={this.handleValidate} />
+                        <TagButton label="Not depressed" handleClick={this.handleUnvalidate} />
+                        <TagButton label="Indesirable" handleClick={this.handleIndesirable} />
+                    </Card>
+    				<Tweets tweets={tweets[current_user]} />
+                    <Card>
+                        <TagButton label="Depressed" handleClick={this.handleValidate} />
+                        <TagButton label="Not depressed" handleClick={this.handleUnvalidate} />
+                        <TagButton label="Indesirable" handleClick={this.handleIndesirable} />
+                    </Card>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    Loading
+                </div>
+            )
+        }
     }
 }
 
@@ -71,6 +106,10 @@ App.propTypes = {
 	current_user: PropTypes.number,
     dispatch: PropTypes.func.isRequired
 }
+
+App.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired,
+};
 
 function mapStateToProps(state) {
     const { apiTweets } = state

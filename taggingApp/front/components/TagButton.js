@@ -12,7 +12,7 @@ export default class TagButton extends Component {
         const { label, handleClick } = this.props
 
 		return (
-			<RaisedButton label={label} secondary={true} onClick={handleClick} />
+			<RaisedButton label={label} onClick={handleClick} />
 		)
 	}
 }
