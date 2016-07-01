@@ -13,6 +13,7 @@ import os
 import time
 
 MAX_USER = 4
+BACK_USERS = []
 
 app = Flask(__name__, static_url_path="")
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -20,11 +21,16 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/fetch_users/<int:nb_users>', methods=['GET'])
 def fetch_users(nb_users):
+    global BACK_USERS
     if nb_users < 0:
         return make_response("ERROR", 404)
     if nb_users > MAX_USER:
         nb_users = MAX_USER
-    users = [x['user_id'] for x in get_next_users_to_display(nb_users)]
+    if len(BACK_USERS) == 0:
+        tmp = [x['user_id'] for x in get_next_users_to_display(0)]
+        BACK_USERS = [tmp[i:i + MAX_USER] for i in range(0, len(tmp), MAX_USER)]
+        print BACK_USERS
+    users = BACK_USERS.pop(0)
     resp = jsonify({'users': users})
     resp.status_code = 200
     return resp
