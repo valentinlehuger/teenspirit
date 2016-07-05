@@ -1,4 +1,5 @@
 from bluebirdlib.data import get_tweets
+from bluebirdlib.user import add_control_to_user
 from bluebirdlib.user import get_next_users_to_display
 from datetime import timedelta
 from flask import Flask
@@ -27,7 +28,7 @@ def fetch_users(nb_users):
     if nb_users > MAX_USER:
         nb_users = MAX_USER
     if len(BACK_USERS) == 0:
-        tmp = [x['user_id'] for x in get_next_users_to_display(0)]
+        tmp = [x['user_id'] for x in get_next_users_to_display(100)]
         BACK_USERS = [tmp[i:i + MAX_USER] for i in range(0, len(tmp), MAX_USER)]
         print BACK_USERS
     users = BACK_USERS.pop(0)
@@ -56,7 +57,8 @@ def tag_user():
         "date": time.strftime('%Y-%m-%d %H:%M:%S'),
         tag_name: tag_value
     }
-    # add_control_to_user(long(user_id), query)
+    print "control: ", long(user_id), query
+    add_control_to_user(long(user_id), query)
     resp = jsonify({})
     resp.status_code = 200
     return resp
