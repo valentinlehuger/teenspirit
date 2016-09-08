@@ -1,3 +1,4 @@
+from pymongo import MongoClient
 import pandas as pd
 import numpy as np
 import json
@@ -7,26 +8,38 @@ import datetime
 import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
-path = '/home/romain/Documents/BitBucket/DataForGood/teenspirit/teenspirit/'
+client = MongoClient("mongodb://romain:teenspirit@ds011462.mlab.com:11462/teenspirit")
+db = client['teenspirit']
 
-hashtags = ['mort','mourir','suicide']
-df_tmp = {}
-col = None
-for hashtag in hashtags:
-    json_data=open(path+hashtag+".json").read()
-    data = json.loads(json_data)
-    df_tmp[hashtag] = json_normalize(data)
-    if col is None:
-        col = list(df_tmp[hashtag].columns)
-    else:
-        col = list(set(col) & set(df_tmp[hashtag].columns))
+coll = db.tweets #db.users
 
-df = None
-for hashtag in hashtags:
-    if df is None:
-        df = df_tmp[hashtag][col]
-    else:
-        df = pd.concat([df,df_tmp[hashtag][col]])
+json = list(coll.find({},{'retweeted_status':0,'urls':0}))
+df = json_normalize(json)
+del json
+
+path = '/home/romain/Documents/Github/teenspirit/'
+#==============================================================================
+# path = '/home/romain/Documents/BitBucket/DataForGood/teenspirit/teenspirit/'
+# 
+# hashtags = ['mort','mourir','suicide']
+# df_tmp = {}
+# col = None
+# for hashtag in hashtags:
+#     json_data=open(path+hashtag+".json").read()
+#     data = json.loads(json_data)
+#     df_tmp[hashtag] = json_normalize(data)
+#     if col is None:
+#         col = list(df_tmp[hashtag].columns)
+#     else:
+#         col = list(set(col) & set(df_tmp[hashtag].columns))
+# 
+# df = None
+# for hashtag in hashtags:
+#     if df is None:
+#         df = df_tmp[hashtag][col]
+#     else:
+#         df = pd.concat([df,df_tmp[hashtag][col]])
+#==============================================================================
 
 
 def movingaverage(interval, window_size):
@@ -68,7 +81,7 @@ features['day'] = timeline['day'].max() # ? la date d'aujourd'hui ? de sa derni�
 # Engagement
 #==============================================================================
 """
-o   Volume : normalized number of posts per day made by the user ;
+o   (DONE) Volume : normalized number of posts per day made by the user ;
 o   Proportion of reply posts (@-replies) from a user per day à level of social 
     interaction with other users ;
 o   Fraction of retweets from a user per day à participation in information 
@@ -77,7 +90,7 @@ o   Proportion of links (urls) shared by each user over a day ;
 o   Fraction of question-centric posts from a user in a day à tendency to seek 
     and derive informational benefits from the community  (présence d’un point 
     d’interrogation);
-o   Insomnia index = normalized difference in number of posting made between 
+o   (DONE) Insomnia index = normalized difference in number of posting made between 
     night window and day window on a given day à pattern of posting during the 
     course of a day. Moments of day of activity. Night window = 9PM – 6AM vs 
     day window.
@@ -93,6 +106,9 @@ for user in users['user.id']:
     features.loc[features['user_id']==user,timeseriename('volume')] = timeSerieFeatures(list(x['id']),7)
 
 ### Fraction of retweets
+df[['retweeted_status.source','retweeted_status.retweet_count','retweeted_status.retweeted']].head()
+
+
 
 ### Proportion of links
 
