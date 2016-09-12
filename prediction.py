@@ -1,11 +1,12 @@
 from pymongo import MongoClient
 import pandas as pd
 import numpy as np
-import json
 from scipy.stats import entropy
 from pandas.io.json import json_normalize
 import datetime
 import warnings
+import re
+import json
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
 client = MongoClient("mongodb://romain:teenspirit@ds011462.mlab.com:11462/teenspirit")
@@ -13,8 +14,14 @@ db = client['teenspirit']
 
 coll = db.tweets #db.users
 
-json = list(coll.find({},{'retweeted_status':0,'urls':0}))
-df = json_normalize(json)
+mongo_out = list(coll.find({},{'retweeted_status':0}))
+for i in range(len(mongo_out)):
+    if 'urls' in list(mongo_out[i].keys()):
+        mongo_out[i]['has_urls'] = 1
+        del mongo_out[i]['urls']
+    else:
+        mongo_out[i]['has_urls'] = 0
+df = json_normalize(mongo_out)
 del json
 
 path = '/home/romain/Documents/Github/teenspirit/'
@@ -57,7 +64,8 @@ def timeSerieFeatures(x,M):
     return mn, std, ent, mean_momentum
 
 
-users = df[['user.id','user.name']].drop_duplicates()
+users = df[['user.id']].drop_duplicates()
+users['user.id'] = list(map(str,users['user.id']))
 df['datetime'] = list(map(lambda x: datetime.datetime.strptime(x,"%a %b %d %H:%M:%S %z %Y"),df['created_at']))
 df['day'] = list(map(lambda x: datetime.datetime.date(x),df['datetime']))
 
@@ -72,9 +80,12 @@ def timeseriename(x):
 col = ['user_id','day']
 col.extend(timeseriename('volume'))
 col.extend(timeseriename('insomnia'))
+col.extend(timeseriename('fr_retweet'))
+col.extend(timeseriename('fr_urls'))
+col.extend(timeseriename('fr_question'))
 features = pd.DataFrame(columns = col)
 
-features['user_id'] = users['user.id']
+features['user.id'] = users['user.id']
 features['day'] = timeline['day'].max() # ? la date d'aujourd'hui ? de sa dernière venu ? de la date d'aujourdhui et depuis combien de temps on l'a pas vu ? 
 
 #==============================================================================
@@ -84,10 +95,10 @@ features['day'] = timeline['day'].max() # ? la date d'aujourd'hui ? de sa derni�
 o   (DONE) Volume : normalized number of posts per day made by the user ;
 o   Proportion of reply posts (@-replies) from a user per day à level of social 
     interaction with other users ;
-o   Fraction of retweets from a user per day à participation in information 
+o   (DONE) Fraction of retweets from a user per day à participation in information 
     sharing with followers ;
-o   Proportion of links (urls) shared by each user over a day ;
-o   Fraction of question-centric posts from a user in a day à tendency to seek 
+o   (DONE) Proportion of links (urls) shared by each user over a day ;
+o   (DONE) Fraction of question-centric posts from a user in a day à tendency to seek 
     and derive informational benefits from the community  (présence d’un point 
     d’interrogation);
 o   (DONE) Insomnia index = normalized difference in number of posting made between 
@@ -106,13 +117,53 @@ for user in users['user.id']:
     features.loc[features['user_id']==user,timeseriename('volume')] = timeSerieFeatures(list(x['id']),7)
 
 ### Fraction of retweets
-df[['retweeted_status.source','retweeted_status.retweet_count','retweeted_status.retweeted']].head()
+# retweeted : is this a retweet
+# The fraction of retweets from a user per day, signaling how
+# she participates in information sharing with her followers
+df.loc[df.index,'is_retweet'] = np.repeat(0,len(df))
+df.loc[df['retweet_count']>0,'is_retweet']=1
+retweet_sum = df.groupby(['user.id','day'])['is_retweet'].sum().reset_index()
+retweet_count = df.groupby(['user.id','day'])['retweeted'].count().reset_index()
+retweet = pd.merge(retweet_sum,retweet_count,on=['user.id','day'])
+retweet['fraction'] = retweet['is_retweet']/retweet['retweeted']
 
-
+for user in users['user.id']:
+    x = retweet[['fraction','day']][retweet['user.id']==user]
+    x = pd.merge(timeline,x,how='left')
+    x = x.fillna(0)
+    features.loc[features['user.id']==user,timeseriename('fr_retweet')] = timeSerieFeatures(list(x['fraction']),7)
 
 ### Proportion of links
+urls_sum = df.groupby(['user.id','day'])['has_urls'].sum().reset_index()
+urls_count = df.groupby(['user.id','day'])['has_urls'].count().reset_index()
+urls = pd.merge(urls_sum,urls_count,on=['user.id','day'])
+urls['fraction'] = urls['has_urls_x']/urls['has_urls_y']
+
+for user in users['user.id']:
+    x = retweet[['fraction','day']][retweet['user.id']==user]
+    x = pd.merge(timeline,x,how='left')
+    x = x.fillna(0)
+    features.loc[features['user.id']==user,timeseriename('fr_urls')] = timeSerieFeatures(list(x['fraction']),7)
 
 ### Fraction of question-centric
+def isQuestion(x):
+    tmp = re.search('\?',x)
+    if tmp is None:
+        return 0
+    else:
+        return 1
+
+df['question'] = list(map(isQuestion,df['text']))
+question_sum = df.groupby(['user.id','day'])['question'].sum().reset_index()
+question_count = df.groupby(['user.id','day'])['question'].count().reset_index()
+question = pd.merge(question_sum,question_count,on=['user.id','day'])
+question['fraction'] = question['question_x']/question['question_y']
+
+for user in users['user.id']:
+    x = retweet[['fraction','day']][retweet['user.id']==user]
+    x = pd.merge(timeline,x,how='left')
+    x = x.fillna(0)
+    features.loc[features['user.id']==user,timeseriename('fr_question')] = timeSerieFeatures(list(x['fraction']),7)
 
 ### Insomnia index
 df['hour'] = list(map(lambda x: x.hour,df['datetime']))
@@ -130,7 +181,7 @@ for user in users['user.id']:
     x = user_insomnia[['insomnia','day']][user_insomnia['user.id']==user]
     x = pd.merge(timeline,x,how='left')
     x = x.fillna(0)
-    features.loc[features['user_id']==user,timeseriename('insomnia')] = timeSerieFeatures(list(x['insomnia']),7)
+    features.loc[features['user.id']==user,timeseriename('insomnia')] = timeSerieFeatures(list(x['insomnia']),7)
 
 
 
@@ -194,6 +245,18 @@ o   (a) usage of depression-related terms → define a lexicon with drepression
 o   (b) popular antidepressants in the treatment of clinical depression
 Wikipedia page ‘list of antidepressants’ > lexicon of drugs name.
 """
+
+#==============================================================================
+# User descriptors
+#==============================================================================
+users_context = df[['datetime','user.id','user.friends_count','user.followers_count']].drop_duplicates()
+users_context['user.id'] = list(map(str,users_context['user.id']))
+users_context = users_context.loc[users_context.groupby(['user.id'])['datetime'].idxmax()]
+del users_context['datetime']
+
+features = pd.merge(features,users_context,on='user.id')
+
+
 
 features['day'] = list(map(str,features['day']))
 features_json = features.to_dict(orient='records')
