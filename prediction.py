@@ -22,7 +22,7 @@ for i in range(len(mongo_out)):
     else:
         mongo_out[i]['has_urls'] = 0
 df = json_normalize(mongo_out)
-del json
+del mongo_out
 
 path = '/home/romain/Documents/Github/teenspirit/'
 #==============================================================================
@@ -66,6 +66,7 @@ def timeSerieFeatures(x,M):
 
 users = df[['user.id']].drop_duplicates()
 users['user.id'] = list(map(str,users['user.id']))
+df['user.id'] = list(map(str,df['user.id']))
 df['datetime'] = list(map(lambda x: datetime.datetime.strptime(x,"%a %b %d %H:%M:%S %z %Y"),df['created_at']))
 df['day'] = list(map(lambda x: datetime.datetime.date(x),df['datetime']))
 
@@ -77,7 +78,7 @@ timeline = pd.DataFrame({'day':list(map(lambda x: datetime.datetime.date(x),time
 def timeseriename(x):
     return [x+"_mn",x+"_std",x+"_ent",x+"_mn_mom"]
     
-col = ['user_id','day']
+col = ['user.id','day']
 col.extend(timeseriename('volume'))
 col.extend(timeseriename('insomnia'))
 col.extend(timeseriename('fr_retweet'))
@@ -114,7 +115,7 @@ for user in users['user.id']:
     x = vol[['id','day']][vol['user.id']==user]
     x = pd.merge(timeline,x,how='left')
     x = x.fillna(0)
-    features.loc[features['user_id']==user,timeseriename('volume')] = timeSerieFeatures(list(x['id']),7)
+    features.loc[features['user.id']==user,timeseriename('volume')] = timeSerieFeatures(list(x['id']),7)
 
 ### Fraction of retweets
 # retweeted : is this a retweet
@@ -253,7 +254,8 @@ users_context = df[['datetime','user.id','user.friends_count','user.followers_co
 users_context['user.id'] = list(map(str,users_context['user.id']))
 users_context = users_context.loc[users_context.groupby(['user.id'])['datetime'].idxmax()]
 del users_context['datetime']
-
+users_context = users_context.rename(columns={'user.friends_count':'friends_count',
+                                              'user.followers_count':'followers_count'})
 features = pd.merge(features,users_context,on='user.id')
 
 
